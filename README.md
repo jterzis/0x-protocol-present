@@ -8,6 +8,8 @@ Requirements
 
 `go get golang.org/x/tools/present`
 
+`cd ./present`
+
 `present`
 
 Navigate to http://127.0.0.1:3999 on browser to open slides
