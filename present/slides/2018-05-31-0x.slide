@@ -1,0 +1,84 @@
+0x Protocol
+Decentralized token trading protocol for Ethereum
+31 May 2018
+
+
+John Terzis
+john@blockfi.com
+
+################
+* Introduction
+################
+
+Addressing problems posed by centralized exchanges:
+
+
+.image /slides/img/2018-05-10/crypt_hacks.png 400 560
+
+* Features
+
+- Low friction peer-to-peer exchange of ERC20 tokens on Ethereum.
+- Adding support for ERC721 (collectibles)
+- Open standard and common building block driving interop among applications that incorporate exchange functionality.
+- Trades executed as "atomic swaps" by Ethereum smart contracts that are public, free to use.
+- No counterparty risk
+- Apps built ontop of protocol can access public liquidity pools or build their own liquidity pools and charge transaction fees on volume.
+- Decentralized governance used to secure protocol
+- Anyone can create an exchange and customized products ontop of 0x.
+
+
+################
+* Off-Chain Order Relay, on-chain settlement with relayer as transport 
+################
+
+.image /slides/img/2018-05-10/0x-dex-diagram.png 600 847
+
+################
+* Off-chain Order Relay (cont)
+################
+
+1. Maker approves the decentralized exchange (DEX) contract to access their balance of Token A.
+2. Relayer cites a fee schedule and the address they use to collect transaction fees.
+3. Maker creates an order, setting feeA and feeB to values that satisfy the Relayer's fee schedule, setting feeRecipient to Relayer's desired receiving address and signs the order with their private key.
+4. Maker transmits the signed order to Relayer.
+5. Relayer receives the order, checkes that the order is valid and that it provides the required fees. If the order is invalid or does not meet Relayer's requirements, the order is rejected. If the order is satisfactory, Replayer posts the order to their order book.
+6. Takers recieve an updated version of the order book that includes the Maker's order.
+7. Taker approves the DEX contract to access their balance of Token B.
+8. Taker submits the maker's signed order ot the DEX contract.
+9. The DEX contract authenticates makers signature, verifies that the order has not expired, verifies that the order has not already been filled, then transfers tokens between the two parties at a specified exchange rate.
+
+##################
+* Product Idea building on 0x
+##################
+
+Decentralized Shapeshift
+
+Instantly purchase tokens with ETH trustlessly and in a single transaction. No Deposits.
+
+.image /slides/img/2018-05-10/0x-trade-widget.png 473 400
+
+
+##################
+* Product Idea building on 0x (cont)
+##################
+
+- The trade widget is a "Forward Contract" in Solidity, which takes care of some of configuration steps that traders normally have to go through to trade using 0x protocol.
+- The user sends ETH and a 0x order to the Forwarding Contract.
+- The Forwarding Contract converts the user's ETH into WETH.
+- WETH is "ERC20 wrapped ETH" and trades at 1:1 ETH. (ETH is proto-token not conforming to ERC20)
+- WETH <-> ETH roundtrippable using a smart contract
+- WETH allows you to trade directly with alt coins.
+- The Forwarding contract passese the order to the 0x smart contracts, covering the ZRX fee and exchanging WETH for tokens.
+- The Forwarding contract sends the newly acquired tokens back to the user.
+
+For liquidity, orders could be provided at runtime by the dApp hosting the trade widget or sourced from existing open order book relayers using 0x Connect and the Standard Relayer API.
+
+The above UX could be made to allow for market orders as well which would really amount to 1-click trustless token buying.
+
+
+##################
+* References 
+##################
+
+.link https://0xproject.com/pdfs/0x-white-paper.pdf 0x Whitepaper
+.link https://blog.0xproject.com/18-ideas-for-0x-relayers-in-2018-80a1498b955f 18 Ideas for 0x Relayers
